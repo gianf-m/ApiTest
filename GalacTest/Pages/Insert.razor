@@ -1,0 +1,37 @@
+﻿@page "/Insertar"
+@using Api.Productos
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@inject IHttpClientFactory ClientFactory
+
+<PageTitle>Insertar</PageTitle>
+
+
+<h1>Inserta un producto</h1>
+
+
+<EditForm Model=@producto OnValidSubmit="HandleSubmit">
+    <label for="DescripcionInput">Descripción</label>
+    <InputText id="DescripcionInput" @bind-Value="@producto.Descripcion"> </InputText>
+    <label for="PrecioInput">Precio</label>
+    <InputNumber id="PrecioInput" @bind-Value="@producto.Precio"> </InputNumber>
+    <label for="ExistenciaInput">Existencia</label>
+    <InputNumber id="ExistenciaInput" @bind-Value="@producto.Existencia"> </InputNumber>
+    <button type="submit" class="btn-primary">Crear</button> <br/>
+    <div><label id="Create">@vSubmit</label></div>
+</EditForm>
+
+@code{
+    ProductoDto producto = new ProductoDto();
+    string vSubmit = string.Empty;
+    public void HandleSubmit(EditContext editContext){
+        var newProducto = (ProductoDto)editContext.Model;
+        //productoAppServices.AddProduct(newProducto);
+        vSubmit = "El Producto Fue Creado";
+        producto.Descripcion = string.Empty;
+        producto.Existencia = 0;
+        producto.Precio = 0;
+    }
+
+
+}

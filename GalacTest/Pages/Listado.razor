@@ -1,0 +1,57 @@
+﻿@page "/Listado"
+@using Api.Productos
+@using Newtonsoft
+@using Newtonsoft.Json
+@inject IHttpClientFactory ClientFactory
+<PageTitle>Registros</PageTitle>
+
+
+    <h1>Lista de productos</h1>
+    <table border="1" cellpadding="6" cellspacing="2">
+        <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Existencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in Productos)
+            {
+                <tr>
+                    <td>@producto.Descripcion</td>
+                    <td>@producto.Precio</td>
+                    <td>@producto.Existencia</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+@code{
+    List<ProductoDto> Productos = new List<ProductoDto>();
+
+    public void HandleSubmit(EditContext editContext) {
+        var editProducto = (ProductoDto)editContext.Model;
+        //productoAppServices.UpdateProduct(editProducto.Id, editProducto);
+        GetLista();
+    }
+
+    protected override void OnInitialized() {
+        GetLista();
+        base.OnInitialized();
+    }
+
+    public void GetLista(){
+        HttpClient vClient = new HttpClient();
+        vClient.BaseAddress = new Uri("https://localhost:7214/Productos/Get-Productos");
+        StringContent vContent = new StringContent("");
+        HttpResponseMessage vResponse = vClient.GetAsync("https://localhost:7214/Productos/Get-Productos").Result;
+        string vResult = string.Empty;
+        if (vResponse.IsSuccessStatusCode) {
+            var taskResult = vResponse.Content.ReadAsStringAsync();
+            vResult = taskResult.Result;
+            Productos = JsonConvert.DeserializeObject<List<ProductoDto>>(vResult);
+        }
+    }
+
+}

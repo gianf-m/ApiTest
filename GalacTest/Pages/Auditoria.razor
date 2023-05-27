@@ -1,0 +1,51 @@
+﻿@page "/Logs"
+@using Api.Logs
+@using Newtonsoft
+@using Newtonsoft.Json
+@inject IHttpClientFactory ClientFactory
+<PageTitle>Auditoria</PageTitle>
+
+    <h1>Lista de productos</h1>
+    <table border="1" cellpadding="6" cellspacing="2">
+        <thead>
+            <tr>
+                <th>Acción ejecutada</th>
+                <th>Fecha de Ejecución</th>
+                <th>Información Adicional</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var Log in Logs) {
+                <tr>
+                    <td>@Log.Acciones</td>
+                    <td>@Log.FechaDeEjecucion.ToString("dd/MM/yyyy")</td>
+                    <td>@Log.InformacionAdicional</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+
+@code{
+    List<LogDto> Logs = new List<LogDto>();
+
+    protected override void OnInitialized() {
+        GetLista();
+        base.OnInitialized();
+    }
+
+    public void GetLista() {
+        HttpClient vClient = new HttpClient();
+        vClient.BaseAddress = new Uri("https://localhost:7214/Logs");
+        StringContent vContent = new StringContent("");
+        HttpResponseMessage vResponse = vClient.GetAsync("https://localhost:7214/Logs").Result;
+        string vResult = string.Empty;
+        if (vResponse.IsSuccessStatusCode) {
+            var taskResult = vResponse.Content.ReadAsStringAsync();
+            vResult = taskResult.Result;
+            Logs = JsonConvert.DeserializeObject<List<LogDto>>(vResult);
+        }
+    }
+
+}

@@ -1,0 +1,53 @@
+﻿@page "/ListadoEliminar"
+@using Api.Productos
+<PageTitle>Registros</PageTitle>
+
+    <h1>Lista de productos</h1>
+
+
+    <table border="1" cellpadding="6" cellspacing="2">
+        <thead>
+            <tr>
+                <th>Opciones</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Existencia</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in Productos)
+            {
+                <tr>
+                    <td><button @onclick="() => EliminarProd(producto)">Eliminar</button></td>
+                    <td>@producto.Descripcion</td>
+                    <td>@producto.Precio</td>
+                    <td>@producto.Existencia</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+
+
+@code{
+    List<ProductoDto> Productos = new List<ProductoDto>();
+    ProductoDto DeleteProducto = new ProductoDto();
+    string vSubmit = string.Empty;
+
+    protected override void OnInitialized() {
+        base.OnInitialized();
+        GetLista();
+    }
+
+    public void GetLista(){
+        //Productos = productoAppServices.GetListProducts(false);
+    }
+
+    private void EliminarProd(ProductoDto producto) {
+        DeleteProducto = producto;
+        //productoAppServices.DeleteProduct(producto.Id);
+        GetLista();
+    }
+
+
+}
